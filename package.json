@@ -14,7 +14,8 @@
     "lint": "concurrently \"yarn lint:js\" \"yarn lint:scss\" \"yarn flow\"",
     "test": "jest --config ./jest/jest-config.js",
     "test:coverage": "jest --coverage --config ./jest/jest-config.js",
-    "test:watch": "jest --watch --config ./jest/jest-config.js"
+    "test:watch": "jest --watch --config ./jest/jest-config.js",
+    "date-macos": " date +\"%Y-%m-%dT%H:%M:%SZ\""
   },
   "repository": "https://github.com/alxshelepenok/gatsby-starter-lumen",
   "author": "Alexander Shelepenok <alxshelepenok@gmail.com>",
