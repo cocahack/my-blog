@@ -1,9 +1,9 @@
 ---
-title: Perfecting the Art of Perfection
+title: 응애
 date: "2016-09-01T23:46:37.121Z"
 template: "post"
-draft: false
-slug: "perfecting-the-art-of-perfection"
+draft: true
+slug: "응애"
 category: "Design Inspiration"
 tags:
   - "Handwriting"
