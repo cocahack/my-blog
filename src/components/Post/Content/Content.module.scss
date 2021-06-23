@@ -1,6 +1,11 @@
 @import '../../../assets/scss/variables';
 @import '../../../assets/scss/mixins';
 
+@font-face {
+  font-family: Iosevka;
+  src: url('https://pvinis.github.io/iosevka-webfont/7.0.2/iosevka.css');
+}
+
 .content {
   max-width: $layout-post-single-width;
   padding: 0 15px;
@@ -41,6 +46,7 @@
     }
 
     & a {
+      max-width: $layout-post-width;
       text-decoration: underline
     }
 
@@ -81,6 +87,14 @@
         @include margin-bottom(.5);
       }
 
+      & a {
+        max-width: $layout-post-width;
+      }
+
+    }
+
+    code {
+      font-family: Iosevka;
     }
 
   }
