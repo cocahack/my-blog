@@ -4,6 +4,8 @@
 .meta {
   &__date {
     font-style: italic;
+    @include margin-top(.3);
+    @include margin-bottom(.3);
   }
 
 }
