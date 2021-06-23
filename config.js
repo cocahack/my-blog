@@ -6,7 +6,7 @@ module.exports = {
   title: 'Blog by Jake',
   subtitle: 'Divide-and-Conquer!',
   copyright: '©Jake All rights reserved.',
-  disqusShortname: '',
+  disqusShortname: 'blog-cocahack',
   postsPerPage: 4,
   googleAnalyticsId: '',
   useKatex: false,
