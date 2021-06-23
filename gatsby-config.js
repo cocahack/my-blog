@@ -112,7 +112,7 @@ module.exports = {
           {
             resolve: 'gatsby-remark-images',
             options: {
-              maxWidth: 960,
+              maxWidth: 1070,
               withWebp: true
             }
           },
@@ -130,7 +130,8 @@ module.exports = {
               theme: 'One Dark Pro',
               extensions: ['material-theme'],
             }
-          }
+          },
+          'gatsby-remark-my-unfurl'
         ]
       }
     },
