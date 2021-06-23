@@ -7,7 +7,7 @@ slug: "libvirt deadlock 이슈 고찰"
 category: "Retrospection"
 tags:
   - "Libvirt"
-description: "Java 기초 내용을 집약한 '자바의 신'의 2권 내용 중 필요한 내용만 추려 요약했다."
+description: "Libvirt 와 레거시 사이에서 경험을 바탕으로 생각을 정리해봤다."
 socialImage: "/media/libvirt_logo.svg.png"
 ---
 
