@@ -193,16 +193,16 @@ a.gatsby-remark-link-unfurl__container {
   font-size: 21px;
   line-height: 24px;
   font-weight: lighter;
-  max-width: 500px;
   background-color: #fff;
-  border-width: 1px;
+  border-width: 2px;
+  border-radius: 8px;
   border-style: solid;
   border-color: #e1e8ed;
   overflow: hidden;
   color: #181919;
   font-family: InterUI, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
   display: flex;
-  text-decoration: none;
+  text-decoration: none !important;
   opacity: 1;
   position: relative;
   transition-duration: 150ms;
@@ -210,7 +210,6 @@ a.gatsby-remark-link-unfurl__container {
   transition-property: background, border-color;
   will-change: background, border-color;
   flex-direction: column;
-  height: 382px;
 }
 
 a.gatsby-remark-link-unfurl__container:hover {
@@ -232,6 +231,7 @@ a.gatsby-remark-link-unfurl__container:hover {
 .gatsby-remark-link-unfurl__content {
   display: flex;
   padding: 10px 15px;
+  width: 100%;
   min-width: 0;
   box-sizing: border-box;
   flex: 0 0 125px;
@@ -245,6 +245,7 @@ a.gatsby-remark-link-unfurl__container:hover {
   font-weight: bold;
   margin: 0;
   width: 100%;
+  height: auto;
   flex-grow: 1.2;
   font-size: 16px;
 }
@@ -262,6 +263,7 @@ a.gatsby-remark-link-unfurl__container:hover {
   flex-grow: 2;
   margin: auto 0;
   line-height: 18px;
+  font-weight: 400;
 }
 
 .gatsby-remark-link-unfurl__description p {
@@ -279,11 +281,15 @@ a.gatsby-remark-link-unfurl__container:hover {
   width: 100%;
 }
 
-.gatsby-remark-link-unfurl__container footer p {
+.gatsby-remark-link-unfurl__container footer div {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   margin-top: 0;
+  margin-left: 5px !important;
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: gray;
 }
 
 .gatsby-remark-link-unfurl__container footer span {
@@ -291,4 +297,5 @@ a.gatsby-remark-link-unfurl__container:hover {
   width: 25px;
   height: 25px;
   background-size: contain;
+  margin: 0 5px 0 0;
 }
