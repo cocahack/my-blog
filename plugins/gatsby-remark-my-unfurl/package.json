@@ -6,6 +6,7 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
+    "mustache": "^4.2.0",
     "unfurl.js": "^5.3.0",
     "unist-util-select": "3.0.4"
   }
