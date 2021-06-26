@@ -1,7 +1,7 @@
 ---
 title: "Contact me"
 template: "page"
-socialImage: { publicURL: "/media/image-4.jpg" }
+socialImage: "/media/image-4.jpg"
 ---
 
 Morbi in sem quis dui placerat ornare. Pellentesque odio nisi, euismod in, pharetra a, ultricies in, diam. Sed arcu. Cras consequat.

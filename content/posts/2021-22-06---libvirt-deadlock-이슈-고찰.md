@@ -8,7 +8,7 @@ category: "Retrospection"
 tags:
   - "Libvirt"
 description: "Libvirt 와 레거시 사이에서 경험을 바탕으로 생각을 정리해봤다."
-socialImage: { publicURL: "/media/libvirt_logo.svg.png" }
+socialImage: "/media/libvirt_logo.svg.png"
 ---
 
 ![libvirt-logo](/media/libvirt_logo.svg.png)
