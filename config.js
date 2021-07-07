@@ -4,7 +4,7 @@ module.exports = {
   url: 'https://lumen.netlify.com',
   pathPrefix: '/',
   title: 'Blog by Jake',
-  subtitle: 'Divide-and-Conquer!',
+  subtitle: '\'잘\' 하고 싶은 개발자',
   copyright: '©Jake All rights reserved.',
   disqusShortname: 'blog-cocahack',
   postsPerPage: 4,
@@ -27,7 +27,7 @@ module.exports = {
   author: {
     name: 'Jake',
     photo: 'https://avatars.githubusercontent.com/u/18232901?s=400&u=9fb502623ba9dd36f436100a75987777dab23a47&v=4',
-    bio: 'Divide-and-Conquer!',
+    bio: '\'잘\' 하고 싶은 개발자',
     contacts: {
       email: 'rncchae@gmail.com',
       facebook: '',
