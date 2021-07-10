@@ -130,8 +130,7 @@ module.exports = {
               theme: 'One Dark Pro',
               extensions: ['material-theme'],
             }
-          },
-          'gatsby-remark-my-unfurl'
+          }
         ]
       }
     },

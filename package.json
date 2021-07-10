@@ -5,8 +5,7 @@
   "main": "n/a",
   "scripts": {
     "develop": "yarn clean && gatsby develop",
-    "build": "yarn clean && yarn install-plugin && gatsby build",
-    "install-plugin": "cd ./plugins/gatsby-remark-my-unfurl && yarn",
+    "build": "yarn clean && gatsby build",
     "deploy": "yarn clean && gatsby build --prefix-paths && gh-pages -d public",
     "clean": "rimraf .cache public",
     "flow": "flow",
