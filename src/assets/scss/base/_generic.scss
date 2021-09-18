@@ -40,35 +40,35 @@ h1 {
 }
 
 h2 {
-  font-size: $typographic-base-font-size * 1.6875;
+  font-size: $typographic-base-font-size * 2.1875;
   @include line-height(1.5);
   @include margin-top(1.7);
   @include margin-bottom(.5);
 }
 
 h3 {
-  font-size: $typographic-base-font-size * 1.375;
+  font-size: $typographic-base-font-size * 1.775;
   @include line-height(1);
   @include margin-top(1.5);
   @include margin-bottom(.5);
 }
 
 h4 {
-  font-size: $typographic-base-font-size * 1.2;
+  font-size: $typographic-base-font-size * 1.5;
   @include line-height(1);
   @include margin-top(1.5);
   @include margin-bottom(.5);
 }
 
 h5 {
-  font-size: $typographic-base-font-size;
+  font-size: $typographic-base-font-size * 1.35;
   @include line-height(1);
   @include margin-top(1.3);
   @include margin-bottom(.5);
 }
 
 h6 {
-  font-size: $typographic-base-font-size;
+  font-size: $typographic-base-font-size * 1.15;
   @include line-height(1);
   @include margin-top(1.2);
   @include margin-bottom(.5);
@@ -130,10 +130,30 @@ p {
   @include margin-bottom(0);
 }
 
+// blockquote {
+//   padding: 0;
+//   font-style: italic;
+//   text-align: center;
+// }
+
+// https://css-tricks.com/snippets/css/simple-and-nice-blockquote-styling/
 blockquote {
-  padding: 0;
-  font-style: italic;
-  text-align: center;
+  background: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: "\201C""\201D""\2018""\2019";
+}
+blockquote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+blockquote p {
+  display: inline;
 }
 
 figure {
