@@ -98,6 +98,13 @@ module.exports = {
         }]
       }
     },
+    'gatsby-plugin-netlify',
+    {
+      resolve: 'gatsby-plugin-netlify-cms',
+      options: {
+        modulePath: `${__dirname}/src/cms/index.js`
+      }
+    },
     {
       resolve: 'gatsby-transformer-remark',
       options: {
@@ -136,13 +143,6 @@ module.exports = {
     },
     'gatsby-transformer-sharp',
     'gatsby-plugin-sharp',
-    'gatsby-plugin-netlify',
-    {
-      resolve: 'gatsby-plugin-netlify-cms',
-      options: {
-        modulePath: `${__dirname}/src/cms/index.js`
-      }
-    },
     {
       resolve: 'gatsby-plugin-google-gtag',
       options: {

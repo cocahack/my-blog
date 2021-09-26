@@ -8,7 +8,6 @@ category: "Java"
 tags:
   - "Java"
 description: "Object 클래스의 핵심 메소드에 포함된 equals() 와 hashCode() 를 정리했다."
-socialImage: ""
 ---
 
 ## `Object` 클래스의 `equals()`
