@@ -2,7 +2,7 @@
 title: 테스트
 date: '2021-10-11T07:21:16Z'
 template: 'post'
-draft: false
+draft: true
 slug: '100'
 category: "Database"
 tags:
