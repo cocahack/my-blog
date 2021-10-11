@@ -2,8 +2,13 @@
 @import '../../../assets/scss/mixins';
 
 @font-face {
-  font-family: Iosevka;
-  src: url('https://pvinis.github.io/iosevka-webfont/7.0.2/iosevka.css');
+	font-family: 'Iosevka Web';
+	font-display: swap;
+	font-weight: 400;
+	font-stretch: normal;
+	font-style: normal;
+	src: url('https://pvinis.github.io/iosevka-webfont/7.0.2/woff2/iosevka-regular.woff2') format('woff2'), 
+  url('https://pvinis.github.io/iosevka-webfont/7.0.2/ttf/iosevka-regular.ttf') format('truetype');
 }
 
 .content {
@@ -94,7 +99,7 @@
     }
 
     code {
-      font-family: Iosevka;
+      font-family: 'Iosevka Web';
     }
 
   }

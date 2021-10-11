@@ -209,7 +209,7 @@ http-nio-8082-exec-9 released.
 
 맵에 락을 저장하게 되면 프로세스를 재시작하지 않는 이상 계속 남아있을 것이다. 하지만 어떤 VM이 종료되고 나면 더 이상 그 키를 사용할 일이 없기 때문에 제거해주는 것이 좋다고 생각했다. 
 
-`ConcurrentHashMap`을 사용한다면 명시적으로 키를 제거하는 방법 외에는 달리 방도가 없다. Guava 라이브러리의 `Cache`를 사용하여 일정 시간동안 접근되지 않은 키는 제거해주는 `eviction` 기능이 있으며, `Cache`를 `ConcurrentMap`로 다룰 수도 있기 때문에 적용하기가 매우 쉽다. 
+`ConcurrentHashMap`을 사용한다면 명시적으로 키를 제거하는 방법 외에는 달리 방도가 없다. Guava 라이브러리의 `Cache`를 사용하여 일정 시간동안 접근되지 않은 키는 제거해주는 `eviction` 기능이 있으며, `Cache`를 `ConcurrentMap`로 다룰 수도 있기 때문에 적용하기가 매우 쉬웠다. 
 
 ```java
 class SecondService {
