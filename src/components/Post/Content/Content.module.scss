@@ -67,11 +67,8 @@
 
     & table {
       padding: 0;
-      width: $layout-post-width;
       margin-top: 0;
       display: block;
-      // @include margin-bottom(0);
-      // @include line-height(1.15);
       overflow-x: scroll; 
     }
     
