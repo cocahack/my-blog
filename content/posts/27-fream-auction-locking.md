@@ -1,5 +1,5 @@
 ---
-title: 입찰 테이블의 무결성 문제를 해결한 과정
+title: 입찰 테이블의 무결성 문제 해결하기
 date: "2022-01-14T06:02:32Z"
 template: "post"
 draft: false
@@ -212,9 +212,146 @@ ORDER BY A.price DESC
 | 52533 | auction | 50, 16, 2732 | BID | 529000.00 |
 | 52533 | auction | 50, 16, 2745 | BID | 528000.00 |
 
-이제 입찰 생성과 즉시 구매/판매 요청 시 `SELECT ... FOR UPDATE`를 반드시 호출하도록 서비스 레이어에 비즈니스 로직을 추가하여  무결성을 유지할 수 있게 되었다.
+#### `SELECT ... FOR UPDATE` 의 한계
 
-## 번외
+그러나 위의 방법은 문제가 있다. `SELECT ... FOR UPDATE`는 조회에 사용한 레코드에 락을 걸고 `REPEATABLE READ` 에서의 PHANTOM READ를 방지하기 위해 넥스트 키 락을 사용한다. 그런데 이 모든 것의 전제 조건은 레코드가 있어야 한다는 것이다. 존재하지 않는 레코드에 락을 걸 수 없기 때문에, 레코드가 없으면 넥스트 키 락도 사용할 수 없다.
+
+따라서 위에서 생각했던 인덱스는 (product_id, size_id) 조합의 `auction` 레코드가 한 건이라도 존재해야 동작한다.
+
+실제 동작을 확인해보기 위해 `auction` 테이블의 모든 레코드를 지우고 같은 쿼리를 실행해봤는데, 락이 걸리지 않았다.
+
+<figure>
+    <img src="/media/2022-14-01/5.png" alt="쿼리 결과 2">
+    <figcaption>좌측에서 먼저 쿼리를 실행했는데, 우측에서 대기 없이 쿼리가 바로 실행되는 모습</figcaption>
+</figure>
+
+아직 존재하지 않는 레코드에 락을 걸 수 있는지 찾아보았다. 
+
+[How do I lock on an InnoDB row that doesn't exist yet?](https://stackoverflow.com/questions/17068686/how-do-i-lock-on-an-innodb-row-that-doesnt-exist-yet)
+
+테이블 락을 사용하거나 [뮤텍스 테이블](https://www.xaprb.com/blog/2005/09/22/mutex-tables-in-sql/)을 만들어 활용하는 등의 방법이 나오는데, 이런 방법들을 사용하면 원하는 기능을 구현할 수 있지만, 락 범위가 너무 크다는 것이 부담스러웠다. 
+
+#### 해결 방안
+
+결국 레코드 락으로는 해결할 수 없다는 문제라는 것을 깨달았으니, 다른 도구를 활용하면 되겠다고 생각했다. 생각한 방법은 두 가지가 있었다.
+
+1. MySQL의 Named Lock 사용
+2. 별도의 락 테이블 사용
+
+첫 번째 방법은 [기술 블로그](https://techblog.woowahan.com/2631/)에서 봤던 내용을 떠올려 생각한 방법이다. 그러나 동작 방식에 따른 이슈로 이 방법은 택하지 않았다.
+
+`GET_LOCK()` 과 `RELEASE_LOCK()`이 트랜잭션과는 별개로 동작하기 때문에 트랜잭션 시작 전, 종료 후 각각 `GET_LOCK()`과 `RELEASE_LOCK()`을 호출해줘야 하는 문제점이 있었다. 이를 구현하기 위해서 `@Transactional` 을 사용하지 않고 직접 `Connection` 객체를 가져와서 `try-with-resource`로 비즈니스 로직을 묶는 방식을 사용해야 할 것 같았고, 그렇게 되면 코드의 복잡도가 올라갈 것으로 예상했다. 
+
+또, 다른 커넥션에서 명시적으로 `RELEASE_LOCK()`을 호출하면 락이 바로 해제된다는 점도 주의해야 했다. 
+
+이런 이유로, 락 획득을 트랜잭션에 속하게 만들 수 있는 2번 방법을 택했다. `auction` 테이블의 레코드를 변경하기 전에, 락 테이블의 (product_id, size_id) 조합의 레코드에 쓰기 락을 걸도록 구현했다.
+
+락 테이블은 다음과 같은 구조로 결정했다. 
+
+```sql
+create table auction_lock_by_product_id_and_size_id
+(
+    product_id bigint not null,
+    size_id    bigint not null,
+    primary key (product_id, size_id)
+);
+```
+
+#### 코드 작업
+
+##### `LockManager` 구현
+
+락을 획득하려면 락 테이블에 레코드가 없으면 생성한 다음, 레코드에 X Lock을 걸어주는 작업을 해줘야 한다. 이러한 작업을 하나의 인터페이스로 노출하기 위해 `LockManager`를 따로 두었다.
+
+```Java
+@Component
+@RequiredArgsConstructor
+@Transactional(propagation = Propagation.MANDATORY)
+public class AuctionLockManager {
+
+    private final AuctionLockByProductIdAndSizeIdMapper lockMapper;
+
+    public void lock(Long productId, Long sizeId) {
+        lockMapper.tryInsertRecord(productId, sizeId);
+        lockMapper.getLock(productId, sizeId);
+    }
+}
+```
+
+`tryInsertRecord()`에서 락에 사용할 레코드를 삽입하는 역할을 한다. `INSERT IGNORE INTO`를 사용해서 레코드가 이미 있을 때 에러가 발생하지 않도록 처리했다.
+
+그런 다음, `getLock()`에서 `SELECT ... FOR UPDATE`를 사용해 (product_id, size_id) 쌍의 레코드 한 건을 잠근다.
+
+또한 해당 컴포넌트는 전파 수준을 `MANDATORY`로 사용해, 반드시 다른 트랜잭션이 있어야만 동작하게 만들었다.
+
+##### `AuctionService` 수정
+
+서비스 레이어에서는 입찰을 생성할 때와 거래가 성사되었을 때 락을 사용하도록 코드를 삽입해야 한다.
+
+```java
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class AuctionService {
+
+    // ...
+
+    public AuctionDto createAuction(AuctionRequest request) {
+        lockManager.lock(request.getProductId(), request.getSizeId());
+
+        Auction auction = request.getType().constructor.apply(request);
+
+        Product product = productService.getProduct(request.getProductId());
+        Size size = product.getSize(request.getSizeId());
+        User user = userMapper.getUserById(request.getUserId());
+
+        auction.setProduct(product);
+        auction.setSize(size);
+        auction.setUser(user);
+
+        auctionMapper.create(auction);
+
+        return convert(auction);
+    }
+
+}
+```
+
+입찰 생성은 기존 비즈니스 로직의 첫 부분에 락을 사용하는 코드를 삽입하는 것으로 제약 조건이 적용되었다.
+
+```java
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class AuctionService {
+
+    // ...
+
+    public SignAuctionResponse sign(User bidder, Long auctionId) {
+        Auction auction = auctionMapper.getAuction(auctionId);
+
+        lockManager.lock(auction.getProduct().getId(), auction.getSize().getId());
+
+        return signHelper(bidder, auctionId);
+    }
+
+    private SignAuctionResponse signHelper(User bidder, Long auctionId) {
+        Auction auction = auctionMapper.getAuctionForUpdate(auctionId);
+
+        auction.sign(bidder);
+        auctionMapper.update(auction);
+
+        return modelMapper.map(auction, SignAuctionResponse.getTypeObject());
+    }
+
+}
+```
+
+거래는 `product_id`와 `size_id`를 알 수 없으므로 우선 레코드를 가져온 다음 락을 건다. 그런 다음, 대상이 되는 입찰에도  `SELECT ... FOR UPDATE`를 사용해 동시에 같은 입찰에 거래되는 것을 방지했다.
+
+---
+
+## Appendix: Gap lock, Next-key lock 추가 조사
 
 ### GAP Lock의 존재 확인 
 
