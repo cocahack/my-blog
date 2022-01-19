@@ -209,7 +209,7 @@ ORDER BY A.price DESC
 
 그러나 위의 방법은 문제가 있다. `SELECT ... FOR UPDATE`는 조회에 사용한 레코드에 락을 걸고 `REPEATABLE READ` 에서의 PHANTOM READ를 방지하기 위해 넥스트 키 락을 사용한다. 그런데 이 모든 것의 전제 조건은 레코드가 있어야 한다는 것이다. 존재하지 않는 레코드에 락을 걸 수 없기 때문에, 레코드가 없으면 넥스트 키 락도 사용할 수 없다.
 
-따라서 위에서 생각했던 인덱스는 (product_id, size_id) 조합의 `auction` 레코드가 한 건이라도 존재해야 동작한다.
+따라서 위에서 생각했던 인덱스는 `product_id`, `size_id` 조합의 `auction` 레코드가 한 건이라도 존재해야 동작한다.
 
 실제 동작을 확인해보기 위해 `auction` 테이블의 모든 레코드를 지우고 같은 쿼리를 실행해봤는데, 락이 걸리지 않았다.
 
@@ -237,7 +237,7 @@ ORDER BY A.price DESC
 
 또, 다른 커넥션에서 명시적으로 `RELEASE_LOCK()`을 호출하면 락이 바로 해제된다는 점도 주의해야 했다. 
 
-이런 이유로, 락 획득을 트랜잭션에 속하게 만들 수 있는 2번 방법을 택했다. `auction` 테이블의 레코드를 변경하기 전에, 락 테이블의 (product_id, size_id) 조합의 레코드에 쓰기 락을 걸도록 구현했다.
+이런 이유로, 락 획득을 트랜잭션에 속하게 만들 수 있는 2번 방법을 택했다. `auction` 테이블의 레코드를 변경하기 전에, 락 테이블의 `product_id`, `size_id` 조합의 레코드에 쓰기 락을 걸도록 구현했다.
 
 락 테이블은 다음과 같은 구조로 결정했다. 
 
@@ -273,7 +273,7 @@ public class AuctionLockManager {
 
 `tryInsertRecord()`에서 락에 사용할 레코드를 삽입하는 역할을 한다. `INSERT IGNORE INTO`를 사용해서 레코드가 이미 있을 때 에러가 발생하지 않도록 처리했다.
 
-그런 다음, `getLock()`에서 `SELECT ... FOR UPDATE`를 사용해 (product_id, size_id) 쌍의 레코드 한 건을 잠근다.
+그런 다음, `getLock()`에서 `SELECT ... FOR UPDATE`를 사용해 `product_id`, `size_id` 쌍의 레코드 한 건을 잠근다.
 
 또한 해당 컴포넌트는 전파 수준을 `MANDATORY`로 사용해, 반드시 다른 트랜잭션이 있어야만 동작하게 만들었다.
 
