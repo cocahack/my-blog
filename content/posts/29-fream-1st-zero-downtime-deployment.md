@@ -15,7 +15,7 @@ description: "Fream 앱의 1차 프로젝트에 무중단 배포를 적용한 �
 
 [이전 글](/posts/28) 에서 CI/CD를 Jenkins를 사용해 구축한 과정을 단계별로 서술했다. CD의 마지막 단계에서 원격 서버에 있는 스크립트를 실행함으로써 무중단 배포가 이뤄진다. 
 
-### 서버 구성
+### 서버 구성과 무중단 배포 과정 요약
 
 서버 구성은 다음과 같다.
 
@@ -27,9 +27,9 @@ Jenkins가 원격 서버의 스크립트를 실행하면, 빌드된 최신 이�
 
 #### 환경 구성
 
-CD가 실행되기 전에 패키지와 Nginx, MySQL DB 컨테이너가 미리 준비되어 있어야 했다. 
+애플리케이션을 실행할 서버에 패키지와 Nginx, MySQL DB 컨테이너가 미리 준비돼야 한다.
 
-가장 먼저, 필요한 패키지를 설치했다.
+그래서 가장 먼저 필요한 패키지를 설치했다.
 
 ```sh
 #!/bin/bash
@@ -159,7 +159,7 @@ find_current_active_set
 echo $NEXT_ACTIVE_SET
 
 ## Run latest application
-docker run -d --name $NEXT_ACTIVE_SET -p $NEXT_ACTIVE_PORT:$NEXT_ACTIVE_PORT \
+docker run -d --name $NEXT_ACTIVE_SET -p $NEXT_ACTIVE_PORT:$NEXT_ACTIVE_PORT   \
 	--network fream -e SERVER_PORT=$NEXT_ACTIVE_PORT                           \
 	-e SPRING_PROFILES_ACTIVE=prod -e FREAM_DB_URL=fream-mysql                 \
 	-e FREAM_DB_PORT=3306 -e FREAM_DB_SCHEME=$MYSQL_DATABASE                   \
@@ -185,7 +185,7 @@ do
 		exit 2
 	fi
 
-	echo "Retry Health Check after 5 seconds"
+	echo "Retry Health Check after 10 seconds"
 	sleep 10
 done
 

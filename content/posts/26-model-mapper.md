@@ -17,7 +17,7 @@ description: "Fream 프로젝트에서 ModelMapper 를 도입한 이유와 동�
 
 ### 프로젝트 도입
 
-서비스 레이어에서 비즈니스 로직을 수행한 다음, 그 결과를 반환하기 위해 엔티티 클래스를 DTO로 변환하여 반환하는 작업을 프로젝트에서 자주 수행했었다. 
+서비스 레이어에서 비즈니스 로직을 수행한 다음, 엔티티 클래스를 DTO로 변환하여 반환하는 작업을 프로젝트에서 자주 수행했었다. 
 
 그리고 DTO의 목적에 맞게 비즈니스 로직을 클래스에서 제거하고, 클래스 내부에 서비스 또는 도메인에 속한 클래스를 import하지 않도록 강제하여 의존성을 완전히 제거히려 했다. 이렇게 하기 위해서는 엔티티 클래스에서 직접 DTO를 만드는 메소드를 작성해야 했다. 
 
@@ -50,7 +50,7 @@ public class Product {
 
 http://modelmapper.org/user-manual/how-it-works/#matching-process
 
-ModelMapper는 두 번의 프로세스 - matching, mapping 를 거쳐 객체를 다른 객체로 변환한다. 
+ModelMapper는 두 번의 프로세스(matching, mapping)를 거쳐 객체를 다른 객체로 변환한다. 
 
 #### Matching process
 

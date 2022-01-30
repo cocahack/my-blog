@@ -18,16 +18,16 @@ description: "Fream 앱의 1차 프로젝트 배포 과정을 기록했다."
 이 선택에 따라서 CI/CD를 구축하기 위해 다음과 같이 구상했다.
 
 - CI
-  - 대상: `main` 브랜치를 타겟으로하는 모든 PR
-  - 파이프라인
-    - 코딩 컨벤션 확인: CheckStyle을 활용하여 google convention 적용
-    - 유닛, 통합 테스트 실행
-    - 커버리지 확인: 라인, 브랜치 커버리지 100% 유지
+    - 대상: `main` 브랜치를 타겟으로하는 모든 PR
+    - 파이프라인
+        - 코딩 컨벤션 확인: CheckStyle을 활용하여 google convention 적용
+        - 유닛, 통합 테스트 실행
+        - 커버리지 확인: 라인, 브랜치 커버리지 100% 유지
 - CD
-  - 대상: `main` 브랜치
-  - 파이프라인
-    - 도커 이미지 빌드
-    - 원격 서버로 배포
+    - 대상: `main` 브랜치
+    - 파이프라인
+        - 도커 이미지 빌드
+        - 원격 서버로 배포
 
 ### CI 구축
 
@@ -76,7 +76,7 @@ PR에 CI를 실행하는 가장 쉬운 방법은 `GitHub Pull Request Builder` �
 
 `GitHub Pull Request Builder`를 사용하여 파이프라인을 구성할 때, webhook을 사용하겠다는 옵션에 체크했었다. 이를 실제로 사용하기 위해서는 GitHub 프로젝트에 Webhook 설정을 해줘야 한다. GitHub 레포리토리에서 Settings > Webhooks로 접근할 수 있다.
 
-Webhook 페이지에서 `Add webhook`을 누른 후, `Payload URL` 에 `http://<jenkins_url>/ghprbhook` 을 입력해준다. 그리고 `Let me select individual events.` 라디오버튼을 누른 뒤, `Pull requests`에 체크하여 PR 생성 시 웹훅이 전송되도록 설정한다. 
+Webhook 페이지에서 `Add webhook`을 누른 후, `Payload URL` 에 `http://<jenkins_url>/ghprbhook` 을 입력해준다. 그리고 `Let me select individual events.` 라디오버튼을 누른 뒤, `Pull requests`에 체크하여 PR 생성 시 webhook이 전송되도록 설정한다. 
 
 ![6.png](/media/2022-29-01/6.png)
 
@@ -125,7 +125,7 @@ pipeline {
 
 CD 는 PR이 `main` 브랜치에 병합될 때 실행되는 것으로 생각했다. 즉, `main` 브랜치가 커밋될 때에만 실행되어야 하는 것이다. 
 
-이를 Jenkins에서 가능하게 해주는 플러그인은 `Generic Webhook Trigger`이다. `Push` 이벤트가 발생했을 때, Jenkins로 웹훅을 전송하도록 GitHub 레포지토리에 설정하면, 특정 규칙에 따라 그 이벤트를 처리할 수도 있고, 그렇지 않을 수도 있다. 
+이를 Jenkins에서 가능하게 해주는 플러그인은 `Generic Webhook Trigger`이다. `Push` 이벤트가 발생했을 때, Jenkins로 webhook을 전송하도록 GitHub 레포지토리에 설정하면, 특정 규칙에 따라 그 이벤트를 처리할 수도 있고, 그렇지 않을 수도 있다. 
 
 [여러 가지 활용 방법](https://github.com/jenkinsci/generic-webhook-trigger-plugin/tree/master/src/test/resources/org/jenkinsci/plugins/gwt/bdd)을 예시로 제공하고 있으며, 그 중 특정 브랜치에만 파이프라인을 실행하는 예제를 사용해 CD를 구축했다.
 
@@ -144,7 +144,8 @@ CD 는 PR이 `main` 브랜치에 병합될 때 실행되는 것으로 생각했�
 
 CI를 실행하기 위해 webhook을 설정했던 것처럼, 이번에도 마찬가지로 webhook을 설정해야 한다. 
 
-고정된 Payload URL 형식 뒤에 토큰을 쿼리 파라미터나 헤더 등에 포함시켜주면 된다. 
+Webhook을 받을 URL은 플러그인에서 제시하는 고정된 Payload URL을 사용하고, 토큰을 쿼리 파라미터나 헤더 등에 포함시켜주면 된다. 
+URL 예시는 다음과 같다.
 
 ```url
 https://<JENKINS_URL>/generic-webhook-trigger/invoke?token=123asd
