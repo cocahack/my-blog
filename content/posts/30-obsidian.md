@@ -2,7 +2,7 @@
 title: 옵시디언 도입기
 date: "2022-04-03T04:25:29Z"
 template: "post"
-draft: false
+draft: true
 slug: "30"
 category: "writing"
 tags:
